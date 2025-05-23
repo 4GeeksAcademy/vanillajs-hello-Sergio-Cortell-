@@ -6,32 +6,14 @@ import "./assets/img/4geeks.ico";
 
 const cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const cardSuits = ['♦', '♥', '♠', '♣'];
-const historialGame = document.getElementById("historial");
-const playerWins = document.getElementById('playerWins');
-const playerRates = document.getElementById('playerRate');
-const computerWin = document.getElementById('computerWins');
-const computerRate = document.getElementById('computerRate');
-const tiesText = document.getElementById('empates');
-const timetText = document.getElementById('timer');
-const playerButton = document.getElementById('playerBtn');
-let handsplayed = 0;
-let playerPlayed = false;
 
-let userWins = 0;
-let computerWins = 0;
-let ties = 0;
-
-let gameTimer;
-let inactivityTimer;
-let timeLeft = 0;
-
-const buttonStart = document.getElementById('startButton');
-buttonStart.addEventListener('click', startGame);
+let userWins=0;
+let computerWins=0;
 
 const getRandomIndex = (length) => {
   return Math.floor(Math.random() * length);
 }
-//funcion que genera  carta aleatoria 
+
 const generateRandomCard = () => {
   const suit = cardSuits[getRandomIndex(cardSuits.length)];
   const value = cardValues[getRandomIndex(cardValues.length)];
@@ -41,42 +23,23 @@ const generateRandomCard = () => {
   }
 }
 
-function textUpdate() {
-  let numFixed1 = 0;
-  let numFixed2 = 0;
-  let tiesFixed = 0;
-  if (handsplayed != 0) {
-    numFixed1 = (userWins / handsplayed) * 100;
-    numFixed2 = (computerWins / handsplayed) * 100;
-    tiesFixed = (ties / handsplayed) * 100;
-  }
-  playerWins.innerHTML = `Player Wins: ${userWins}`;
-  playerRates.innerHTML = `Win rate: ${numFixed1.toFixed(2)}%`;
-  computerWin.innerHTML = `Computer Wins: ${computerWins}`;
-  computerRate.innerHTML = `Win rate: ${numFixed2.toFixed(2)}%`;
-  tiesText.innerHTML = `Ties: ${ties} ties rate:${tiesFixed.toFixed(2)}%`
-}
 const generateWinner = (playerCard, computerCard) => {
   const userValue = cardValues.indexOf(playerCard);
   const computerValue = cardValues.indexOf(computerCard);
   console.log(`Usuario index: ${userValue}`)
   console.log(`Computer index: ${computerValue}`)
-  handsplayed++;
+
   if (userValue > computerValue) {
-    userWins += 1;
-    let p = `El usuario Ha Ganado!`;
-    addToHistorial(p);
-  }
-  else if (computerValue > userValue) {
-    computerWins += 1
-    let p = `La computadora Ha Ganado!`;
-    addToHistorial(p);
+    userWins+=1;
+    alert('El usuario Ha ganado');
+    document.getElementById('playerWins').innerHTML = `Player Wins: ${userWins}`
+  } else if (computerValue > userValue) {
+    computerWins+=1
+    document.getElementById('computerWins').innerHTML = `Computer Wins: ${computerWins}`
+    alert('La computadora Ha ganado');
   } else {
-    let p = `Empate!`;
-    ties += 1;
-    addToHistorial(p);
+    alert('Hay un Empate')
   }
-  textUpdate();
 }
 
 window.generateCard = function (player) {
@@ -99,78 +62,24 @@ window.generateCard = function (player) {
   return card;
 }
 
+window.adjustCardSize = function () {
+  const width = document.getElementById("cardWidth").value;
+  const height = document.getElementById("cardHeight").value;
+  const cardElement = document.querySelector(".card");
+
+  if (width) cardElement.style.width = `${width}px`;
+  if (height) cardElement.style.height = `${height}px`;
+}
+
 window.play = function () {
-  
   const playerCard = generateCard('player');
   const computerCard = generateCard('computer');
-  playerPlayed = true;
-  const winner = generateWinner(playerCard.value, computerCard.value);
-  startInactivityTimer();
-  console.log(winner);
-
+  setTimeout(() => {
+    const winner = generateWinner(playerCard.value, computerCard.value);
+    console.log(winner);
+  }, 5000);
 }
 
 window.onload = function () {
-  generateCard('player');
-  generateCard('computer');
-  playerButton.disabled = true;
-  setTimeout(() => {
-    alert('Al darle Start Game empezara una partida de 30 segundos, si no le das en 5 segundos a seleccionar carta la pc gana automaticamente! Buena suerte.');
-
-  }, 100)
-}
-
-function addToHistorial(winner) {
-  const p = document.createElement('p');
-  p.textContent = winner;
-  historialGame.append(p);
-}
-function startGame() {
-
-  playerButton.disabled = false;
-  clear(historialGame);
-  playerPlayed = false;
-  timeLeft = 30;
-  timetText.innerHTML = `${timeLeft}s`;
-  buttonStart.disabled = true;
-  alert('Empieza el juego!');
-  startInactivityTimer();
-  gameTimer = setInterval(() => {
-    timeLeft--;
-    timetText.innerHTML = `${timeLeft}s`;
-
-    if (timeLeft <= 0) {
-      timetText.innerHTML = `${timeLeft}s`;
-      endGame();
-    }
-  }, 1000);
-
-}
-
-function startInactivityTimer() {
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(() => {
-    generateCard('computer');
-    computerWins++;
-    handsplayed++;
-    let p = 'el jugador no jugo carta, gana la pc!'
-    addToHistorial(p);
-    textUpdate();
-    startInactivityTimer(); 
-  }, 5000);
-}
-function clear(wheretoClear) {
-  wheretoClear.querySelectorAll('p').forEach(element => element.remove());
-  handsplayed = 0;
-  userWins = 0;
-  computerWins = 0;
-  ties = 0;
-  textUpdate();
-}
-
-function endGame() {
-  clearInterval(gameTimer);
-  clearTimeout(inactivityTimer);
-  alert('¡Terminó el juego!');
-  buttonStart.disabled = false;
+  play();
 }

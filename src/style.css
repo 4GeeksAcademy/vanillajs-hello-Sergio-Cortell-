@@ -12,10 +12,10 @@ h1{
     color: red;
 }
 
-.cards {
+.card {
     background-color: #fff;
     margin: 0 auto;
-    width: 300px;
+    width: 400px;
     padding: 1px 1em 0 8px;
     color: black;
     border-radius: 20px;
@@ -51,8 +51,8 @@ h1{
     justify-content: center;
 }
 
-#playerBtn{
-    background-color: #bb1f2c;
+.btn{
+    background-color: #e63946;
     color: #ffffff;
     border: none;
     padding: 12px 20px;
@@ -62,8 +62,8 @@ h1{
     transition: background-color 0.3s ease;
 }
 
-#playerBtn:hover{
-    background-color: #f04c5a
+.btn:hover{
+    background-color: #c9303e
 }
 
 .player-card-footer-icon,
